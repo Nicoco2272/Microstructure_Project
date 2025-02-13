@@ -2,32 +2,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import weibull_min
 
+# Parámetros del modelo
+lambda_weibull = 50  # Parámetro de escala
+k_weibull = 10  # Parámetro de forma
+pi_I = 0.4  # Probabilidad de una operación informada
+p0 = 51  # Precio inicial
 
-def simulate_prices(lambda_weibull=50, k_weibull=10, num_samples=10000):
-    """Genera precios simulados usando la distribución Weibull."""
-    prices = lambda_weibull * np.random.weibull(k_weibull, num_samples)
-    return prices
+# Funciones de probabilidad para los traders de liquidez
+S_values = np.linspace(0, 7, 100)
+ILB_S = 0.5 - 0.08 * S_values
+ILS_S = 0.5 - 0.08 * S_values
 
+# Distribución de precios de la Weibull
+x = np.linspace(25, 65, 1000)
+pdf_weibull = weibull_min.pdf(x, k_weibull, scale=lambda_weibull)
 
-def plot_price_distribution(prices):
-    """Grafica la distribución de precios simulados en forma de línea."""
-    # Crear un rango de valores para los precios
-    price_range = np.linspace(min(prices), max(prices), 1000)
-
-    # Obtener la densidad de probabilidad usando la función de densidad de la distribución Weibull
-    pdf_values = weibull_min.pdf(price_range, 10, scale=50)
-
+def plot_weibull_distribution():
+    """Grafica la distribución de precios Weibull."""
     plt.figure(figsize=(8, 5))
-    plt.plot(price_range, pdf_values, color='b', label=r"Distribución Weibull $\lambda = 50$, $K = 10$")
-    plt.xlabel("Precio")
-    plt.ylabel("Densidad")
-    plt.title("Distribución de Precios Simulados (Weibull)")
+    plt.plot(x, pdf_weibull, label=f'Weibull Distribution (λ={lambda_weibull}, K={k_weibull})', color='blue')
+    plt.xlabel('Price (P)')
+    plt.ylabel('Density')
+    plt.title('Weibull Price Distribution')
     plt.legend()
-    plt.grid()
     plt.show()
 
-
 if __name__ == "__main__":
-    simulated_prices = simulate_prices()
-    plot_price_distribution(simulated_prices)
-
+    plot_weibull_distribution()
